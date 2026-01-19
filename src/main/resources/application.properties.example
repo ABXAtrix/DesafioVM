@@ -1,0 +1,16 @@
+# CONFIGURAÇÕES DA APLICAÇÃO
+
+spring.application.name=vm
+server.port=8080 (ou outra porta que preferir)
+
+# BANCO DE DADOS
+
+spring.datasource.url=jdbc:postgresql://localhost:5432/nome_banco
+spring.datasource.username=seu_usuario
+spring.datasource.password=sua_senha
+spring.jpa.hibernate.ddl-auto=update
+
+# SEGURANÇA E JWT
+
+jwt.secret=VALOR_DA_SUA_CHAVE_AQUI
+jwt.expiration=3600000
