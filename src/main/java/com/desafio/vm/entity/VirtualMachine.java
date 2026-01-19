@@ -3,9 +3,12 @@ package com.desafio.vm.entity;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-import enums.StatusVm;
+import com.desafio.vm.enums.StatusVmEnum;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -48,6 +51,7 @@ public class VirtualMachine {
 	private LocalDateTime dataCriação;
 
 	@Column(name = "STATUS")
-	private StatusVm Status;
+	@Enumerated(EnumType.STRING)
+	private StatusVmEnum status;
 
 }
