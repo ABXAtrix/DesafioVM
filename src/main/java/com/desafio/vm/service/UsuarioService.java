@@ -13,7 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.desafio.vm.entity.Usuario;
 import com.desafio.vm.exceptions.AplicacaoException;
-import com.desafio.vm.repositroy.UsuarioRepository;
+import com.desafio.vm.repository.UsuarioRepository;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

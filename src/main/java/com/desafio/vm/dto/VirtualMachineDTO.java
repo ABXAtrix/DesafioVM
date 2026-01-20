@@ -24,13 +24,13 @@ public class VirtualMachineDTO {
 
 	private String nome;
 
-	private BigDecimal cpu;
+	private Integer cpu;
 
 	private BigDecimal memoria;
 
 	private BigDecimal disco;
 
-	private LocalDateTime dataCriação;
+	private LocalDateTime dataCriacao;
 
 	private StatusVmEnum status;
 

@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.desafio.vm.config.security.UserDetail;
 import com.desafio.vm.entity.Usuario;
-import com.desafio.vm.repositroy.UsuarioRepository;
+import com.desafio.vm.repository.UsuarioRepository;
 import com.desafio.vm.util.JwtUtil;
 
 import io.jsonwebtoken.Claims;
