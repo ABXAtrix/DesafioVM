@@ -2,7 +2,6 @@ package com.desafio.vm.dto;
 
 import java.util.List;
 
-import com.desafio.vm.entity.VirtualMachine;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
 
@@ -32,6 +31,6 @@ public class UsuarioDTO {
 	@JsonProperty(access = Access.WRITE_ONLY)
 	private String senha;
 
-	private List<VirtualMachine> maquinas;
+	private List<VirtualMachineDTO> maquinas;
 
 }

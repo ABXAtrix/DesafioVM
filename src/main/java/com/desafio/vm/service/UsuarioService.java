@@ -120,8 +120,17 @@ public class UsuarioService {
 	@Transactional
 	public Usuario update(Long id, @Valid Usuario updated) {
 		return repository.findById(id).map(existing -> {
+
+			// Validação de E-mail Duplicado
+			if (updated.getEmail() != null && !updated.getEmail().equals(existing.getEmail())) {
+				Optional<Usuario> userWithEmail = repository.findByEmail(updated.getEmail());
+				if (userWithEmail.isPresent() && !userWithEmail.get().getId().equals(id)) {
+					throw new AplicacaoException("Este e-mail já está sendo utilizado por outro usuário.");
+				}
+				existing.setEmail(updated.getEmail());
+			}
+
 			existing.setNome(updated.getNome());
-			existing.setEmail(updated.getEmail());
 
 			// Verifica se a senha foi alterada para re-criptografar
 			if (updated.getSenha() != null && !updated.getSenha().trim().isEmpty()) {

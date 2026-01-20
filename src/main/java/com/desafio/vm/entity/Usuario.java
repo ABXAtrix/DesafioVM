@@ -2,6 +2,8 @@ package com.desafio.vm.entity;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -48,6 +50,7 @@ public class Usuario {
 
 	// Se as VMs forem vinculadas ao usuário para o limite de 5:
 	@OneToMany(mappedBy = "usuario")
+	@JsonManagedReference
 	private List<VirtualMachine> maquinas;
 
 }

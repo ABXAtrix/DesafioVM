@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import com.desafio.vm.enums.StatusVmEnum;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -74,6 +75,7 @@ public class VirtualMachine {
 
 	@ManyToOne // Indica que muitas VMs pertencem a um único usuário
 	@JoinColumn(name = "USUARIO_ID") // Nome da coluna que será a chave estrangeira no banco
+	@JsonBackReference
 	private Usuario usuario;
 
 }
