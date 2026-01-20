@@ -66,7 +66,7 @@ public class VirtualMachine {
 	private BigDecimal disco;
 
 	@Column(name = "DATA_CRIACAO")
-	private LocalDateTime dataCriação;
+	private LocalDateTime dataCriacao;
 
 	@Column(name = "STATUS")
 	@Enumerated(EnumType.STRING)

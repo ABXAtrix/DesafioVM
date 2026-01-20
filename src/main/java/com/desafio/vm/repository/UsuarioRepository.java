@@ -1,4 +1,4 @@
-package com.desafio.vm.repositroy;
+package com.desafio.vm.repository;
 
 import java.util.Optional;
 

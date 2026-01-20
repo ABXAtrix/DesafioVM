@@ -1,4 +1,4 @@
-package com.desafio.vm.repositroy;
+package com.desafio.vm.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;

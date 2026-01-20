@@ -7,7 +7,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.desafio.vm.entity.Usuario;
-import com.desafio.vm.repositroy.UsuarioRepository;
+import com.desafio.vm.repository.UsuarioRepository;
 
 /**
  * Service responsável pela integração entre o Spring Security e o banco de
