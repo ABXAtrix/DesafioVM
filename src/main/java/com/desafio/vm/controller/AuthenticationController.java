@@ -79,6 +79,25 @@ public class AuthenticationController {
 	}
 
 	/**
+	 * ROTA DE LOGOUT: No JWT Stateless, o logout é feito limpando o token no
+	 * frontend. Este endpoint serve para invalidar a sessão no contexto.
+	 */
+	@PostMapping("/logout")
+	public ResponseEntity<?> logout(jakarta.servlet.http.HttpServletRequest request,
+			jakarta.servlet.http.HttpServletResponse response) {
+
+		// Limpa o contexto de autenticação
+		Authentication auth = org.springframework.security.core.context.SecurityContextHolder.getContext()
+				.getAuthentication();
+		if (auth != null) {
+			new org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler().logout(request,
+					response, auth);
+		}
+
+		return ResponseEntity.ok(Map.of("message", "Logout realizado com sucesso."));
+	}
+
+	/**
 	 * ROTA ME: Retorna os dados do usuário logado através do Token.
 	 */
 	@GetMapping("/me")
