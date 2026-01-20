@@ -42,13 +42,18 @@ public class VirtualMachineService {
 		if (obj.getNome() == null || obj.getNome().trim().isEmpty())
 			throw new AplicacaoException("Nome da VM não pode ser nulo ou vazio");
 
-		// Comparação correta para BigDecimal: compareTo retorna -1, 0 ou 1
-		// val.compareTo(BigDecimal.ZERO) <= 0 significa "menor ou igual a zero"
 		if (obj.getCpu() == null || obj.getCpu() <= 0)
 			throw new AplicacaoException("Quantidade de CPU deve ser maior que zero");
 
 		if (obj.getMemoria() == null || obj.getMemoria().compareTo(java.math.BigDecimal.ZERO) <= 0)
 			throw new AplicacaoException("Quantidade de Memória deve ser maior que zero");
+	}
+	
+	/**
+	 * Busca todas as VMs de todos os usuários.
+	 */
+	public List<VirtualMachine> findAllAdmin() {
+	    return repository.findAll();
 	}
 
 	/**
@@ -99,16 +104,26 @@ public class VirtualMachineService {
 	/**
 	 * Salva uma nova VM associando automaticamente ao usuário logado.
 	 */
+	/**
+	 * Salva uma nova VM associando automaticamente ao usuário logado. Limita a
+	 * criação a no máximo 5 máquinas por usuário.
+	 */
 	@Transactional
 	public VirtualMachine save(VirtualMachine obj) {
 		validateVM(obj);
+
+		// Regra de Negócio: Limite de 5 VMs
+		long totalVmsDoUsuario = this.count();
+		if (totalVmsDoUsuario >= 5) {
+			throw new AplicacaoException("Limite atingido: Cada usuário pode possuir no máximo 5 máquinas virtuais.");
+		}
+
 		obj.setUsuario(getUsuarioLogado());
 
 		if (obj.getId() != null && obj.getId() == 0) {
 			obj.setId(null);
 		}
 
-		// Garante a data de criação no primeiro salvamento
 		if (obj.getDataCriacao() == null) {
 			obj.setDataCriacao(LocalDateTime.now());
 		}
@@ -122,11 +137,24 @@ public class VirtualMachineService {
 	@Transactional
 	public VirtualMachine update(Long id, VirtualMachine updated) {
 		return repository.findById(id).map(existing -> {
+			// 1. Validação de Propriedade
 			if (existing.getUsuario() == null || !existing.getUsuario().getId().equals(getCurrentUserId()))
 				throw new AplicacaoException("Acesso negado: esta máquina pertence a outro usuário.");
 
+			// 2. Bloqueio de alteração de ID (Se o ID enviado no corpo for diferente do ID
+			// da URL)
+			if (updated.getId() != null && !updated.getId().equals(id)) {
+				throw new AplicacaoException("Não é permitido alterar o ID de um registro existente.");
+			}
+
+			// 3. Bloqueio de alteração da Data de Criação
+			if (updated.getDataCriacao() != null && !updated.getDataCriacao().equals(existing.getDataCriacao())) {
+				throw new AplicacaoException("A data de criação não pode ser alterada.");
+			}
+
 			validateVM(updated);
 
+			// Atualiza apenas o que é permitido
 			existing.setNome(updated.getNome());
 			existing.setCpu(updated.getCpu());
 			existing.setMemoria(updated.getMemoria());
