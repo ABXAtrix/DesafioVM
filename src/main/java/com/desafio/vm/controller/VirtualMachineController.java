@@ -40,6 +40,19 @@ public class VirtualMachineController {
 	@Autowired
 	private VirtualMachineMapper mapper;
 
+	@Operation(summary = "Listar todas as máquinas do sistema")
+	@ApiResponses({ @ApiResponse(responseCode = "200", description = "Lista completa obtida com sucesso") })
+	@GetMapping("/all")
+	public ResponseEntity<DesafioVmApiResponse<List<VirtualMachineDTO>>> getAllSystemWide() {
+		try {
+			List<VirtualMachineDTO> lista = service.findAllAdmin().stream().map(mapper::toDto)
+					.collect(Collectors.toList());
+			return ResponseBuilder.build(ResponseEnum.LISTA_OBTIDA, lista);
+		} catch (Exception e) {
+			return ResponseBuilder.handleException(e);
+		}
+	}
+
 	@Operation(summary = "Listar todas as máquinas virtuais do usuário")
 	@ApiResponses({ @ApiResponse(responseCode = "200", description = "Lista obtida com sucesso"),
 			@ApiResponse(responseCode = "400", description = "Erro ao obter a lista") })
