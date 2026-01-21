@@ -56,15 +56,22 @@ public class AuthenticationController {
 	@ApiResponse(responseCode = "400", description = "E-mail já cadastrado ou dados inválidos")
 	@PostMapping("/registrar")
 	public ResponseEntity<?> registrar(@Valid @RequestBody Usuario usuario) {
+		// 1. Validação de e-mail duplicado
 		if (usuarioRepository.findByEmail(usuario.getEmail()).isPresent()) {
 			return ResponseEntity.badRequest().body(Map.of("message", "E-mail já cadastrado"));
 		}
 
+		// 2. Criptografia da senha
 		usuario.setSenha(passwordEncoder.encode(usuario.getSenha()));
+
+		// 3. Cargo padrão de Usuário, caso o usuário esqueça de preencher o campo
+		if (usuario.getCargo() == null) {
+			usuario.setCargo(com.desafio.vm.enums.Cargos.USUARIO);
+		}
 
 		Usuario salvo = usuarioRepository.save(usuario);
 		return ResponseEntity.status(HttpStatus.CREATED)
-				.body(Map.of("message", "Usuário criado com sucesso", "id", salvo.getId()));
+				.body(Map.of("message", "Usuário criado com sucesso", "id", salvo.getId(), "cargo", salvo.getCargo()));
 	}
 
 	/**
