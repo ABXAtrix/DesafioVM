@@ -2,10 +2,13 @@ package com.desafio.vm.entity;
 
 import java.util.List;
 
+import com.desafio.vm.enums.Cargos;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -60,5 +63,10 @@ public class Usuario {
 	@ToString.Exclude
 	@JsonIgnore
 	private List<VirtualMachine> maquinas;
+
+	/** Cargos de usuários para diferenciar entre Admin e Usuário */
+	@Column(name = "CARGO")
+	@Enumerated(EnumType.STRING)
+	private Cargos cargo;
 
 }
