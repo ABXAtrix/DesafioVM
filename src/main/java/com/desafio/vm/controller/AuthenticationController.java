@@ -78,7 +78,7 @@ public class AuthenticationController {
 	@Operation(summary = "Realizar Login", description = "Valida as credenciais e retorna um Token JWT para acesso aos demais endpoints.")
 	@ApiResponse(responseCode = "200", description = "Login realizado com sucesso. Retorna o token JWT.")
 	@ApiResponse(responseCode = "401", description = "Credenciais inválidas")
-	@PostMapping("/login")
+	@PostMapping("/obterToken")
 	public ResponseEntity<?> login(@Valid @RequestBody LoginDTO loginDTO) {
 		try {
 			Authentication auth = authenticationManager
@@ -87,8 +87,7 @@ public class AuthenticationController {
 			UserDetail user = (UserDetail) auth.getPrincipal();
 			String token = jwtUtil.generateToken(user.getUsername());
 
-			return ResponseEntity
-					.ok(Map.of("token", token, "email", user.getUsername(), "userId", user.getUsuario().getId()));
+			return ResponseEntity.ok(Map.of("token", token));
 		} catch (BadCredentialsException e) {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("message", "Credenciais inválidas"));
 		}
