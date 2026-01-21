@@ -33,6 +33,9 @@ public class VirtualMachineService {
 	@Autowired
 	private VirtualMachineRepository repository;
 
+	@Autowired
+	private TarefaService tarefaService;
+
 	/**
 	 * Valida se a VM possui campos obrigatórios.
 	 */
@@ -116,7 +119,6 @@ public class VirtualMachineService {
 	public VirtualMachine save(VirtualMachine obj) {
 		validateVM(obj);
 
-		// Regra de Negócio: Limite de 5 VMs
 		long totalVmsDoUsuario = this.count();
 		if (totalVmsDoUsuario >= 5) {
 			throw new AplicacaoException("Limite atingido: Cada usuário pode possuir no máximo 5 máquinas virtuais.");
@@ -132,7 +134,11 @@ public class VirtualMachineService {
 			obj.setDataCriacao(LocalDateTime.now());
 		}
 
-		return repository.save(obj);
+		VirtualMachine salva = repository.save(obj);
+
+		tarefaService.registrar(salva.getUsuario(), salva, "CREATE");
+
+		return salva;
 	}
 
 	/**
@@ -158,7 +164,11 @@ public class VirtualMachineService {
 
 			validateVM(updated);
 
-			// Atualiza apenas o que é permitido
+			if (updated.getStatus() != null && !updated.getStatus().equals(existing.getStatus())) {
+				tarefaService.registrar(existing.getUsuario(), existing, updated.getStatus().toString());
+			}
+
+			// Atualiza os campos
 			existing.setNome(updated.getNome());
 			existing.setCpu(updated.getCpu());
 			existing.setMemoria(updated.getMemoria());
@@ -177,8 +187,11 @@ public class VirtualMachineService {
 		VirtualMachine vm = repository.findById(id)
 				.orElseThrow(() -> new AplicacaoException("Máquina não encontrada com id: " + id));
 
-		if (vm.getUsuario() == null || !vm.getUsuario().getId().equals(getCurrentUserId()))
+		if (vm.getUsuario() == null || !vm.getUsuario().getId().equals(getCurrentUserId())) {
 			throw new AplicacaoException("Acesso negado para exclusão.");
+		}
+
+		tarefaService.registrar(vm.getUsuario(), vm, "DELETE");
 
 		repository.deleteById(id);
 	}
