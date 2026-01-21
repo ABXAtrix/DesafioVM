@@ -2,12 +2,15 @@ package com.desafio.vm.mapper;
 
 import java.util.List;
 
+import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 
 import com.desafio.vm.dto.UsuarioDTO;
 import com.desafio.vm.entity.Usuario;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = { VirtualMachineMapper.class })
 public interface UsuarioMapper extends GenericMapper<Usuario, UsuarioDTO> {
 
 	/**
@@ -26,7 +29,15 @@ public interface UsuarioMapper extends GenericMapper<Usuario, UsuarioDTO> {
 	 * @return Entidade correspondente ao DTO
 	 */
 	@Override
+	@Mapping(target = "maquinas", source = "maquinas")
 	Usuario toEntity(UsuarioDTO dto);
+
+	@AfterMapping
+	default void linkMaquinas(@MappingTarget Usuario usuario) {
+		if (usuario.getMaquinas() != null) {
+			usuario.getMaquinas().forEach(maquina -> maquina.setUsuario(usuario));
+		}
+	}
 
 	/**
 	 * Converte uma lista de entidades {@link Usuario} em uma lista de

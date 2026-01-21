@@ -12,6 +12,11 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+/**
+ * DTO que representa a estrutura de dados do Usuário para comunicação externa.
+ * Inclui a lista de máquinas virtuais vinculadas para controle e monitoramento.
+ */
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -20,17 +25,23 @@ import lombok.ToString;
 @ToString
 public class UsuarioDTO {
 
+	/** ID único do usuário. */
 	private Long id;
 
+	/** Nome do usuário. */
 	private String nome;
 
+	/** E-mail utilizado como identificador no sistema. */
 	private String email;
 
-	// Esta anotação faz com que a senha seja aceita no POST/PUT,
-	// mas NUNCA apareça no GET (retorno da API)
+	/**
+	 * * Senha do usuário. WRITE_ONLY garante que a senha seja recebida no cadastro,
+	 * mas nunca enviada de volta nas respostas da API por segurança.
+	 */
 	@JsonProperty(access = Access.WRITE_ONLY)
 	private String senha;
 
+	/** Lista de máquinas virtuais pertencentes ao usuário. */
 	private List<VirtualMachineDTO> maquinas;
 
 }

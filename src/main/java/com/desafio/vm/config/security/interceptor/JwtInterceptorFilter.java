@@ -36,24 +36,22 @@ public class JwtInterceptorFilter extends OncePerRequestFilter {
 
         final String authHeader = request.getHeader("Authorization");
 
-        // Verifica se o cabeçalho existe e começa com "Bearer "
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             final String jwt = authHeader.substring(7);
 
-            // Só processa se ainda não houver ninguém autenticado no contexto
             if (SecurityContextHolder.getContext().getAuthentication() == null) {
                 
-                // Valida o token e recupera o UserDetail usando o seu JwtService
+                // Valida o token e recupera o UserDetail usando o JwtService
                 UserDetail userDetail = jwtService.validateTokenAndGetUser(jwt);
 
                 if (userDetail != null) {
                     UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
                             userDetail,
-                            null, // Senha não é necessária após autenticação via token
+                            null,
                             userDetail.getAuthorities()
                     );
                     
-                    // Adiciona detalhes da requisição (IP, sessão, etc)
+                    // Adiciona detalhes da requisição
                     auth.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                     
                     // Define o usuário como autenticado no Spring Security

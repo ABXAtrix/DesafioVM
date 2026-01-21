@@ -21,8 +21,7 @@ import com.desafio.vm.repository.VirtualMachineRepository;
 import lombok.RequiredArgsConstructor;
 
 /**
- * Serviço para gerenciar Máquinas Virtuais, garantindo que todas as operações
- * sejam realizadas no contexto do usuário logado.
+ * Serviço para gerenciar Máquinas Virtuais.
  */
 @Service
 @RequiredArgsConstructor
@@ -48,12 +47,12 @@ public class VirtualMachineService {
 		if (obj.getMemoria() == null || obj.getMemoria().compareTo(java.math.BigDecimal.ZERO) <= 0)
 			throw new AplicacaoException("Quantidade de Memória deve ser maior que zero");
 	}
-	
+
 	/**
 	 * Busca todas as VMs de todos os usuários.
 	 */
 	public List<VirtualMachine> findAllAdmin() {
-	    return repository.findAll();
+		return repository.findAll();
 	}
 
 	/**

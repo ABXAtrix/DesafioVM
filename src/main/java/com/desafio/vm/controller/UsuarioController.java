@@ -41,6 +41,11 @@ public class UsuarioController {
 	@Autowired
 	private UsuarioMapper mapper;
 
+	/**
+	 * Recupera a lista completa de usuários cadastrados no sistema. * @return
+	 * ResponseEntity contendo a resposta com a lista de UsuarioDTO
+	 */
+
 	@Operation(summary = "Listar todos os usuários")
 	@ApiResponses({ @ApiResponse(responseCode = "200", description = "Lista obtida com sucesso"),
 			@ApiResponse(responseCode = "400", description = "Erro ao obter a lista") })
@@ -54,6 +59,13 @@ public class UsuarioController {
 		}
 	}
 
+	/**
+	 * Realiza uma busca personalizada de usuários baseada em filtros dinâmicos.
+	 * * @param filter DTO contendo os campos para filtragem
+	 * 
+	 * @return Lista de usuários que atendem aos critérios informados
+	 */
+
 	@Operation(summary = "Filtrar usuários por critérios")
 	@PostMapping("/filtro")
 	public ResponseEntity<DesafioVmApiResponse<List<UsuarioDTO>>> getAllFiltered(@RequestBody UsuarioDTO filter) {
@@ -65,6 +77,13 @@ public class UsuarioController {
 			return ResponseBuilder.handleException(e);
 		}
 	}
+
+	/**
+	 * Lista usuários utilizando paginação e filtros dinâmicos.
+	 * 
+	 * @param filter DTO contendo os critérios de busca
+	 * @return Página de usuários filtrada
+	 */
 
 	@Operation(summary = "Listar usuários com paginação e filtro")
 	@PostMapping("/paginas")
@@ -78,6 +97,13 @@ public class UsuarioController {
 		}
 	}
 
+	/**
+	 * Busca um usuário específico através de seu identificador único. * @param id
+	 * Identificador do usuário
+	 * 
+	 * @return Detalhes do usuário ou resposta de registro não encontrado
+	 */
+
 	@Operation(summary = "Buscar usuário por ID")
 	@GetMapping("/{id}")
 	public ResponseEntity<DesafioVmApiResponse<UsuarioDTO>> getById(@PathVariable Long id) {
@@ -90,6 +116,14 @@ public class UsuarioController {
 		}
 	}
 
+	/**
+	 * Permite que o usuário autenticado atualize seus próprios dados cadastrais. O
+	 * ID é recuperado automaticamente do contexto de segurança. * @param dto Dados
+	 * atualizados do usuário
+	 * 
+	 * @return UsuarioDTO com as informações atualizadas
+	 */
+
 	@Operation(summary = "Atualizar meu próprio perfil")
 	@PutMapping("/me")
 	public ResponseEntity<DesafioVmApiResponse<UsuarioDTO>> updateSelf(@Valid @RequestBody UsuarioDTO dto) {
@@ -101,6 +135,13 @@ public class UsuarioController {
 			return ResponseBuilder.handleException(e);
 		}
 	}
+
+	/**
+	 * Remove um usuário do sistema. * @param id Identificador do usuário a ser
+	 * excluído
+	 * 
+	 * @return Resposta vazia com status de sucesso
+	 */
 
 	@Operation(summary = "Excluir um usuário do sistema")
 	@DeleteMapping("/{id}")

@@ -5,33 +5,37 @@ import java.util.Date;
 
 import javax.crypto.SecretKey;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import jakarta.annotation.PostConstruct;
 
 @Component
 public class JwtUtil {
 
-	private final long EXPIRATION_TIME = 86400000; // 1 dia em ms
+	@Value("${jwt.expiration}")
+	private long expirationTime;
 
-	private final String SECRET = "w3lE7k+6o9Qp2KDFRW5U3zvKnR3f7Xz+VwbD/JajxgI=";
+	@Value("${jwt.secret}")
+	private String secret;
 
-	private final SecretKey SECRET_KEY;
+	private SecretKey secretKey;
 
-	public JwtUtil() {
-		byte[] decodedKey = Base64.getDecoder().decode(SECRET);
-		this.SECRET_KEY = Keys.hmacShaKeyFor(decodedKey);
+	@PostConstruct
+	public void init() {
+		byte[] decodedKey = Base64.getDecoder().decode(this.secret);
+		this.secretKey = Keys.hmacShaKeyFor(decodedKey);
 	}
 
 	public String generateToken(String username) {
 		return Jwts.builder().setSubject(username).setIssuedAt(new Date())
-				.setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME)).signWith(SECRET_KEY).compact();
+				.setExpiration(new Date(System.currentTimeMillis() + expirationTime)).signWith(secretKey).compact();
 	}
 
 	public Claims extractAllClaims(String token) {
-		return Jwts.parserBuilder().setSigningKey(SECRET_KEY).build().parseClaimsJws(token).getBody();
+		return Jwts.parserBuilder().setSigningKey(secretKey).build().parseClaimsJws(token).getBody();
 	}
-
 }

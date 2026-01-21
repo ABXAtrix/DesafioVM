@@ -3,6 +3,7 @@ package com.desafio.vm.mapper;
 import java.util.List;
 
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
 import com.desafio.vm.dto.VirtualMachineDTO;
 import com.desafio.vm.entity.VirtualMachine;
@@ -13,10 +14,11 @@ public interface VirtualMachineMapper extends GenericMapper<VirtualMachine, Virt
 	/**
 	 * Converte uma entidade {@link VirtualMachine} em um {@link VirtualMachineDTO}.
 	 * 
-	 * @param entity Entidade MvEmbarque a ser convertida
+	 * @param entity Entidade VirtualMachine a ser convertida
 	 * @return DTO correspondente à entidade
 	 */
 	@Override
+	@Mapping(source = "usuario.id", target = "usuarioId")
 	VirtualMachineDTO toDto(VirtualMachine entity);
 
 	/**
@@ -26,6 +28,11 @@ public interface VirtualMachineMapper extends GenericMapper<VirtualMachine, Virt
 	 * @return Entidade correspondente ao DTO
 	 */
 	@Override
+	@Mapping(source = "usuarioId", target = "usuario.id")
+	@Mapping(target = "usuario.nome", ignore = true)
+	@Mapping(target = "usuario.email", ignore = true)
+	@Mapping(target = "usuario.senha", ignore = true)
+	@Mapping(target = "usuario.maquinas", ignore = true)
 	VirtualMachine toEntity(VirtualMachineDTO dto);
 
 	/**

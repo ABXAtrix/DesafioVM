@@ -40,6 +40,12 @@ public class VirtualMachineController {
 	@Autowired
 	private VirtualMachineMapper mapper;
 
+	/**
+	 * Lista todas as máquinas virtuais de todos os usuários do sistema.
+	 * 
+	 * @return Lista completa de VirtualMachineDTO
+	 */
+
 	@Operation(summary = "Listar todas as máquinas do sistema")
 	@ApiResponses({ @ApiResponse(responseCode = "200", description = "Lista completa obtida com sucesso") })
 	@GetMapping("/all")
@@ -52,6 +58,13 @@ public class VirtualMachineController {
 			return ResponseBuilder.handleException(e);
 		}
 	}
+
+	/**
+	 * Recupera as máquinas virtuais pertencentes ao usuário autenticado. Essencial
+	 * para o cálculo do limite de 5 máquinas por usuário.
+	 * 
+	 * @return Lista de VMs do usuário logado
+	 */
 
 	@Operation(summary = "Listar todas as máquinas virtuais do usuário")
 	@ApiResponses({ @ApiResponse(responseCode = "200", description = "Lista obtida com sucesso"),
@@ -67,6 +80,13 @@ public class VirtualMachineController {
 		}
 	}
 
+	/**
+	 * Filtra as máquinas virtuais com base em critérios dinâmicos.
+	 * 
+	 * @param filter DTO com campos de busca (ex: filtrar por status ou nome)
+	 * @return Lista filtrada de VMs
+	 */
+
 	@Operation(summary = "Filtrar máquinas virtuais")
 	@PostMapping("/filtro")
 	public ResponseEntity<DesafioVmApiResponse<List<VirtualMachineDTO>>> getAllFiltered(
@@ -80,6 +100,14 @@ public class VirtualMachineController {
 		}
 	}
 
+	/**
+	 * Lista as máquinas virtuais de forma paginada.
+	 * 
+	 * @param pageable Configuração de página e tamanho
+	 * @param filter   Critérios de filtro para a busca paginada
+	 * @return Página de VirtualMachineDTO
+	 */
+
 	@Operation(summary = "Listar máquinas virtuais paginadas")
 	@PostMapping("/paginas")
 	public ResponseEntity<DesafioVmApiResponse<Page<VirtualMachineDTO>>> getAllPaginated(Pageable pageable,
@@ -92,6 +120,13 @@ public class VirtualMachineController {
 			return ResponseBuilder.handleException(e);
 		}
 	}
+
+	/**
+	 * Busca os detalhes de uma máquina virtual específica pelo ID.
+	 * 
+	 * @param id Identificador único da VM
+	 * @return Detalhes da VM solicitada
+	 */
 
 	@Operation(summary = "Buscar máquina virtual por ID")
 	@ApiResponses({ @ApiResponse(responseCode = "200", description = "Registro encontrado"),
@@ -107,6 +142,14 @@ public class VirtualMachineController {
 		}
 	}
 
+	/**
+	 * Cria uma nova máquina virtual. O Service deve validar o limite máximo de 5
+	 * máquinas antes da persistência.
+	 * 
+	 * @param dto Dados da nova VM
+	 * @return VM criada com dados e registrados gerados
+	 */
+
 	@Operation(summary = "Cadastrar nova máquina virtual")
 	@PostMapping
 	public ResponseEntity<DesafioVmApiResponse<VirtualMachineDTO>> create(@Valid @RequestBody VirtualMachineDTO dto) {
@@ -117,6 +160,14 @@ public class VirtualMachineController {
 			return ResponseBuilder.handleException(e);
 		}
 	}
+
+	/**
+	 * Atualiza os dados de uma VM existente. ID e Data de Criação são imutáveis.
+	 * 
+	 * @param ID  da VM que será editada
+	 * @param dto Novos dados (CPU, Memória, Disco, Nome)
+	 * @return VM atualizada
+	 */
 
 	@Operation(summary = "Atualizar dados da máquina virtual")
 	@PutMapping("/{id}")
@@ -129,6 +180,13 @@ public class VirtualMachineController {
 			return ResponseBuilder.handleException(e);
 		}
 	}
+
+	/**
+	 * Remove uma máquina virtual do sistema.
+	 * 
+	 * @param ID da VM para exclusão
+	 * @return Resposta de sucesso sem corpo
+	 */
 
 	@Operation(summary = "Excluir máquina virtual")
 	@DeleteMapping("/{id}")

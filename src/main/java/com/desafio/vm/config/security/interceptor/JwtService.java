@@ -51,7 +51,6 @@ public class JwtService {
 
 	/**
 	 * Valida o token e retorna o UserDetail para preencher o contexto de segurança.
-	 * Utilizado pelo Filtro de Interceptação.
 	 */
 	public UserDetail validateTokenAndGetUser(String token) {
 		if (!isTokenValid(token)) {

@@ -1,16 +1,16 @@
-# CONFIGURAÇÕES DA APLICAÇÃO
-
 spring.application.name=vm
-server.port=8080 (ou outra porta que preferir)
+server.port=definir_porta ex: 8080
+server.servlet.context-path=/desafio
 
-# BANCO DE DADOS
-
-spring.datasource.url=jdbc:postgresql://localhost:5432/nome_banco
+spring.datasource.url=jdbc:postgresql://localhost:5432/seu_banco
 spring.datasource.username=seu_usuario
 spring.datasource.password=sua_senha
-spring.jpa.hibernate.ddl-auto=update
+spring.datasource.driver-class-name=org.postgresql.Driver
 
-# SEGURANÇA E JWT
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.show-sql=true
+
+spring.session.jdbc.initialize-schema=always
 
 jwt.secret=VALOR_DA_SUA_CHAVE_AQUI
-jwt.expiration=3600000
+jwt.expiration=86400000                1 dia em milisegundos
