@@ -2,6 +2,8 @@ package com.desafio.vm.entity;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -14,9 +16,8 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.ToString;
 
 /**
  * Entidade que representa um Usuário no sistema. Responsável por armazenar as
@@ -24,8 +25,6 @@ import lombok.Setter;
  * controle do limite de capacidade.
  */
 
-@Getter
-@Setter
 @Data
 @Table(name = "USUARIO")
 @Entity
@@ -58,6 +57,8 @@ public class Usuario {
 
 	/** Se as VMs forem vinculadas ao usuário para o limite de 5 */
 	@OneToMany(mappedBy = "usuario") /** Indica que um usuário pertence a várias VMs. Máximo de 5 */
+	@ToString.Exclude
+	@JsonIgnore
 	private List<VirtualMachine> maquinas;
 
 }
