@@ -2,6 +2,7 @@ package com.desafio.vm.dto;
 
 import java.util.List;
 
+import com.desafio.vm.enums.Cargos;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
 
@@ -43,5 +44,8 @@ public class UsuarioDTO {
 
 	/** Lista de máquinas virtuais pertencentes ao usuário. */
 	private List<VirtualMachineDTO> maquinas;
+
+	/** Cargos de usuários para diferenciar entre Admin e Usuário */
+	private Cargos cargo;
 
 }
