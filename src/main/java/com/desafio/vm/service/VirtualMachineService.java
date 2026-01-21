@@ -9,7 +9,9 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -52,7 +54,7 @@ public class VirtualMachineService {
 	 * Busca todas as VMs de todos os usuários.
 	 */
 	public List<VirtualMachine> findAllAdmin() {
-		return repository.findAll();
+		return repository.findAll(Sort.by(Sort.Direction.ASC, "id"));
 	}
 
 	/**
@@ -61,7 +63,6 @@ public class VirtualMachineService {
 	public List<VirtualMachine> findAllFiltered(VirtualMachine filter) {
 		Specification<VirtualMachine> spec = Specification.where(null);
 
-		// Restrição fundamental: Apenas dados do usuário logado
 		spec = spec.and((root, query, cb) -> cb.equal(root.get("usuario").get("id"), getCurrentUserId()));
 
 		if (filter != null) {
@@ -73,15 +74,19 @@ public class VirtualMachineService {
 				spec = spec.and((root, query, cb) -> cb.equal(root.get("status"), filter.getStatus()));
 		}
 
-		return repository.findAll(spec);
+		return repository.findAll(spec, Sort.by(Sort.Direction.ASC, "id"));
 	}
 
 	/**
 	 * Busca VMs paginadas para o usuário logado.
 	 */
 	public Page<VirtualMachine> findAllPaginated(Pageable pageable, VirtualMachine filter) {
-		Specification<VirtualMachine> spec = Specification.where(null);
+		// Se o front-end não enviou ordenação, definimos ID ASC como padrão
+		if (pageable.getSort().isUnsorted()) {
+			pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by("id").ascending());
+		}
 
+		Specification<VirtualMachine> spec = Specification.where(null);
 		spec = spec.and((root, query, cb) -> cb.equal(root.get("usuario").get("id"), getCurrentUserId()));
 
 		if (filter != null && filter.getNome() != null && !filter.getNome().trim().isEmpty()) {

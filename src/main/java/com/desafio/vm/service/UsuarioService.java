@@ -5,7 +5,9 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -15,6 +17,7 @@ import com.desafio.vm.entity.Usuario;
 import com.desafio.vm.exceptions.AplicacaoException;
 import com.desafio.vm.repository.UsuarioRepository;
 
+import jakarta.persistence.criteria.Predicate;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
@@ -47,13 +50,17 @@ public class UsuarioService {
 	 */
 	public List<Usuario> findAllFiltered(Usuario filter) {
 		Specification<Usuario> spec = createSpecification(filter);
-		return repository.findAll(spec);
+		return repository.findAll(spec, Sort.by("id").ascending());
 	}
 
 	/**
 	 * Retorna uma página de usuários filtrados.
 	 */
 	public Page<Usuario> findAllPaginated(Pageable pageable, Usuario filter) {
+		if (pageable.getSort().isUnsorted()) {
+			pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by("id").ascending());
+		}
+
 		Specification<Usuario> spec = createSpecification(filter);
 		return repository.findAll(spec, pageable);
 	}
@@ -66,7 +73,7 @@ public class UsuarioService {
 			if (filter == null)
 				return null;
 
-			var predicates = new java.util.ArrayList<jakarta.persistence.criteria.Predicate>();
+			var predicates = new java.util.ArrayList<Predicate>();
 
 			if (filter.getNome() != null && !filter.getNome().isEmpty()) {
 				predicates.add(cb.like(cb.lower(root.get("nome")), "%" + filter.getNome().toLowerCase() + "%"));
@@ -75,18 +82,19 @@ public class UsuarioService {
 				predicates.add(cb.like(cb.lower(root.get("email")), "%" + filter.getEmail().toLowerCase() + "%"));
 			}
 
-			return cb.and(predicates.toArray(new jakarta.persistence.criteria.Predicate[0]));
+			return cb.and(predicates.toArray(new Predicate[0]));
 		};
 	}
-	
+
 	/**
 	 * Busca de todos os usuários do sistema.
 	 */
 
 	public List<Usuario> findAll() {
-		return repository.findAll();
+		// Usamos o objeto Sort para garantir a ordenação no banco
+		return repository.findAll(Sort.by(Sort.Direction.ASC, "id"));
 	}
-	
+
 	/**
 	 * Busca de usuário através do ID.
 	 */
