@@ -53,7 +53,7 @@ public class CorsConfig {
 	CorsConfigurationSource corsConfigurationSource() {
 		CorsConfiguration config = new CorsConfiguration();
 		// Domínios autorizados para acessar a API
-		config.setAllowedOrigins(List.of("http://localhost:8080/", "http://localhost:3000"));
+		config.setAllowedOrigins(List.of("http://localhost:8080/", "http://localhost:4200"));
 		// Métodos HTTP permitidos
 		config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
 		// Todos os headers permitidos

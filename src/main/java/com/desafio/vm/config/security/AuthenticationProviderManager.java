@@ -36,9 +36,8 @@ public class AuthenticationProviderManager implements AuthenticationProvider {
 			throw new BadCredentialsException("E-mail ou senha inválidos");
 		}
 
-		// Retorna o token de autenticação preenchido (Usuário autenticado com sucesso)
-		return new UsernamePasswordAuthenticationToken(userDetails, null, // Por segurança, não mantemos a senha em
-																			// memória após a autenticação
+		// Retorna o token de autenticação preenchido
+		return new UsernamePasswordAuthenticationToken(userDetails, null,
 				userDetails.getAuthorities());
 	}
 

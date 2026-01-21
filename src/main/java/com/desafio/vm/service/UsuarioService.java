@@ -19,8 +19,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 /**
- * Serviço para operações relacionadas ao Usuario. Contém lógica de negócio para
- * CRUD e filtros dinâmicos.
+ * Serviço para operações relacionadas ao Usuario.
  */
 @Service
 @RequiredArgsConstructor
@@ -60,7 +59,7 @@ public class UsuarioService {
 	}
 
 	/**
-	 * Cria a lógica de Specification baseada nos campos da sua entidade.
+	 * Cria a lógica de Specification baseada nos campos da entidade.
 	 */
 	private Specification<Usuario> createSpecification(Usuario filter) {
 		return (root, query, cb) -> {
@@ -79,10 +78,18 @@ public class UsuarioService {
 			return cb.and(predicates.toArray(new jakarta.persistence.criteria.Predicate[0]));
 		};
 	}
+	
+	/**
+	 * Busca de todos os usuários do sistema.
+	 */
 
 	public List<Usuario> findAll() {
 		return repository.findAll();
 	}
+	
+	/**
+	 * Busca de usuário através do ID.
+	 */
 
 	public Optional<Usuario> findById(Long id) {
 		return repository.findById(id);
