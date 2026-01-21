@@ -23,6 +23,8 @@ import com.desafio.vm.entity.Usuario;
 import com.desafio.vm.repository.UsuarioRepository;
 import com.desafio.vm.util.JwtUtil;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
 
 @RestController
@@ -49,6 +51,9 @@ public class AuthenticationController {
 	 * @return Resposta de sucesso ou erro caso o e-mail já exista.
 	 */
 
+	@Operation(summary = "Registrar novo usuário", description = "Cria um novo usuário e criptografa a senha antes de salvar no banco.")
+	@ApiResponse(responseCode = "201", description = "Usuário criado com sucesso")
+	@ApiResponse(responseCode = "400", description = "E-mail já cadastrado ou dados inválidos")
 	@PostMapping("/registrar")
 	public ResponseEntity<?> registrar(@Valid @RequestBody Usuario usuario) {
 		if (usuarioRepository.findByEmail(usuario.getEmail()).isPresent()) {
@@ -70,6 +75,9 @@ public class AuthenticationController {
 	 * @return Objeto contendo o token JWT, e-mail e ID do usuário autenticado.
 	 */
 
+	@Operation(summary = "Realizar Login", description = "Valida as credenciais e retorna um Token JWT para acesso aos demais endpoints.")
+	@ApiResponse(responseCode = "200", description = "Login realizado com sucesso. Retorna o token JWT.")
+	@ApiResponse(responseCode = "401", description = "Credenciais inválidas")
 	@PostMapping("/login")
 	public ResponseEntity<?> login(@Valid @RequestBody LoginDTO loginDTO) {
 		try {
@@ -91,6 +99,8 @@ public class AuthenticationController {
 	 * garante a limpeza do SecurityContext.
 	 */
 
+	@Operation(summary = "Realizar Logout", description = "Invalida o contexto de segurança atual do servidor.")
+	@ApiResponse(responseCode = "200", description = "Logout processado com sucesso")
 	@PostMapping("/logout")
 	public ResponseEntity<?> logout(jakarta.servlet.http.HttpServletRequest request,
 			jakarta.servlet.http.HttpServletResponse response) {
@@ -113,6 +123,9 @@ public class AuthenticationController {
 	 * @return Dados simplificados do perfil (ID, Nome e E-mail).
 	 */
 
+	@Operation(summary = "Obter perfil atual", description = "Retorna os dados do usuário logado baseando-se no Token JWT enviado no Header.")
+	@ApiResponse(responseCode = "200", description = "Dados do perfil retornados com sucesso")
+	@ApiResponse(responseCode = "403", description = "Token inválido ou ausente")
 	@GetMapping("/me")
 	public ResponseEntity<?> getMe(@AuthenticationPrincipal UserDetail userDetail) {
 		if (userDetail == null) {

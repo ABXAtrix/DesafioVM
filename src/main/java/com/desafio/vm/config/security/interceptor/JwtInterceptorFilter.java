@@ -16,51 +16,62 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 /**
- * Filtro de interceptação de requisições. 
- * Verifica a presença e validade do Token JWT no cabeçalho Authorization.
+ * Filtro de interceptação de requisições. Verifica a presença e validade do
+ * Token JWT no cabeçalho Authorization.
  */
 @Component
 public class JwtInterceptorFilter extends OncePerRequestFilter {
 
-    private final JwtService jwtService;
+	private final JwtService jwtService;
 
-    public JwtInterceptorFilter(JwtService jwtService) {
-        this.jwtService = jwtService;
-    }
+	public JwtInterceptorFilter(JwtService jwtService) {
+		this.jwtService = jwtService;
+	}
 
-    @Override
-    protected void doFilterInternal(HttpServletRequest request,
-                                    HttpServletResponse response,
-                                    FilterChain filterChain)
-            throws ServletException, IOException {
+	@Override
+	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+			throws ServletException, IOException {
 
-        final String authHeader = request.getHeader("Authorization");
+		// Extrai o Header
+		final String authHeader = request.getHeader("Authorization");
 
-        if (authHeader != null && authHeader.startsWith("Bearer ")) {
-            final String jwt = authHeader.substring(7);
+		/**
+		 * Se não houver Header ou não começar com Bearer, apenas segue o fluxo. O
+		 * Spring Security (SecurityConfig) decidirá depois se essa rota exigia ou não o
+		 * token.
+		 */
+		if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+			filterChain.doFilter(request, response);
+			return;
+		}
 
-            if (SecurityContextHolder.getContext().getAuthentication() == null) {
-                
-                // Valida o token e recupera o UserDetail usando o JwtService
-                UserDetail userDetail = jwtService.validateTokenAndGetUser(jwt);
+		final String jwt = authHeader.substring(7);
 
-                if (userDetail != null) {
-                    UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
-                            userDetail,
-                            null,
-                            userDetail.getAuthorities()
-                    );
-                    
-                    // Adiciona detalhes da requisição
-                    auth.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                    
-                    // Define o usuário como autenticado no Spring Security
-                    SecurityContextHolder.getContext().setAuthentication(auth);
-                }
-            }
-        }
+		/** Verifica se já não há alguém autenticado no contexto */
+		if (SecurityContextHolder.getContext().getAuthentication() == null) {
 
-        // Continua o fluxo da requisição para os próximos filtros ou para o Controller
-        filterChain.doFilter(request, response);
-    }
+			try {
+				/** Valida o token e recupera o UserDetail */
+				UserDetail userDetail = jwtService.validateTokenAndGetUser(jwt);
+
+				if (userDetail != null) {
+					UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(userDetail, null,
+							userDetail.getAuthorities());
+
+					auth.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+
+					/** Define o usuário como autenticado */
+					SecurityContextHolder.getContext().setAuthentication(auth);
+				}
+			} catch (Exception e) {
+				/**
+				 * Se o token for inválido, não faz nada. O SecurityConfig barrará a requisição
+				 * nas rotas protegidas (403).
+				 */
+				logger.error("Erro ao validar token JWT: " + e.getMessage());
+			}
+		}
+
+		filterChain.doFilter(request, response);
+	}
 }

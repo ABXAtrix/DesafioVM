@@ -46,9 +46,9 @@ public class UsuarioController {
 	 * ResponseEntity contendo a resposta com a lista de UsuarioDTO
 	 */
 
-	@Operation(summary = "Listar todos os usuários")
+	@Operation(summary = "Listar todos os usuários", description = "Retorna a lista completa de usuários cadastrados. Requer autenticação.")
 	@ApiResponses({ @ApiResponse(responseCode = "200", description = "Lista obtida com sucesso"),
-			@ApiResponse(responseCode = "400", description = "Erro ao obter a lista") })
+			@ApiResponse(responseCode = "403", description = "Acesso negado - Token inválido") })
 	@GetMapping
 	public ResponseEntity<DesafioVmApiResponse<List<UsuarioDTO>>> getAll() {
 		try {
@@ -66,7 +66,8 @@ public class UsuarioController {
 	 * @return Lista de usuários que atendem aos critérios informados
 	 */
 
-	@Operation(summary = "Filtrar usuários por critérios")
+	@Operation(summary = "Filtrar usuários por critérios", description = "Busca usuários com base em atributos como nome ou e-mail enviados no corpo da requisição.")
+	@ApiResponse(responseCode = "200", description = "Busca realizada com sucesso")
 	@PostMapping("/filtro")
 	public ResponseEntity<DesafioVmApiResponse<List<UsuarioDTO>>> getAllFiltered(@RequestBody UsuarioDTO filter) {
 		try {
@@ -85,7 +86,8 @@ public class UsuarioController {
 	 * @return Página de usuários filtrada
 	 */
 
-	@Operation(summary = "Listar usuários com paginação e filtro")
+	@Operation(summary = "Listar usuários com paginação e filtro", description = "Retorna uma página de usuários. Permite controlar o tamanho da página e a ordenação.")
+	@ApiResponse(responseCode = "200", description = "Página retornada com sucesso")
 	@PostMapping("/paginas")
 	public ResponseEntity<DesafioVmApiResponse<Page<UsuarioDTO>>> getAllPaginated(Pageable pageable,
 			@RequestBody UsuarioDTO filter) {
@@ -104,7 +106,9 @@ public class UsuarioController {
 	 * @return Detalhes do usuário ou resposta de registro não encontrado
 	 */
 
-	@Operation(summary = "Buscar usuário por ID")
+	@Operation(summary = "Buscar usuário por ID", description = "Recupera os detalhes de um usuário específico através do seu identificador numérico.")
+	@ApiResponses({ @ApiResponse(responseCode = "200", description = "Usuário encontrado"),
+			@ApiResponse(responseCode = "404", description = "Usuário não localizado") })
 	@GetMapping("/{id}")
 	public ResponseEntity<DesafioVmApiResponse<UsuarioDTO>> getById(@PathVariable Long id) {
 		try {
@@ -124,7 +128,9 @@ public class UsuarioController {
 	 * @return UsuarioDTO com as informações atualizadas
 	 */
 
-	@Operation(summary = "Atualizar meu próprio perfil")
+	@Operation(summary = "Atualizar meu próprio perfil", description = "Atualiza os dados do usuário que está logado. O sistema identifica o usuário automaticamente pelo Token JWT.")
+	@ApiResponses({ @ApiResponse(responseCode = "200", description = "Perfil atualizado com sucesso"),
+			@ApiResponse(responseCode = "400", description = "Dados inválidos fornecidos") })
 	@PutMapping("/me")
 	public ResponseEntity<DesafioVmApiResponse<UsuarioDTO>> updateSelf(@Valid @RequestBody UsuarioDTO dto) {
 		try {
@@ -143,7 +149,9 @@ public class UsuarioController {
 	 * @return Resposta vazia com status de sucesso
 	 */
 
-	@Operation(summary = "Excluir um usuário do sistema")
+	@Operation(summary = "Excluir um usuário do sistema", description = "Remove um usuário e seus vínculos do banco de dados.")
+	@ApiResponses({ @ApiResponse(responseCode = "200", description = "Usuário removido com sucesso"),
+			@ApiResponse(responseCode = "404", description = "Usuário não encontrado para exclusão") })
 	@DeleteMapping("/{id}")
 	public ResponseEntity<DesafioVmApiResponse<Void>> delete(@PathVariable Long id) {
 		try {

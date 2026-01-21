@@ -3,6 +3,8 @@ package com.desafio.vm.entity;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+import org.hibernate.annotations.CreationTimestamp;
+
 import com.desafio.vm.enums.StatusVmEnum;
 
 import jakarta.persistence.Column;
@@ -23,17 +25,14 @@ import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.ToString;
 
 /**
  * Entidade que representa uma Máquina Virtual (VM). Contém especificações de
  * hardware (CPU, Memória, Disco) e o estado atual da máquina.
  */
 
-@Getter
-@Setter
 @Data
 @Table(name = "VIRTUAL_MACHINE")
 @Entity
@@ -76,7 +75,8 @@ public class VirtualMachine {
 	private BigDecimal disco;
 
 	/** Data e hora de criação da VM, gerada automaticamente pelo sistema. */
-	@Column(name = "DATA_CRIACAO")
+	@Column(name = "DATA_CRIACAO", updatable = false)
+	@CreationTimestamp
 	private LocalDateTime dataCriacao;
 
 	/** Estado atual da VM (START, STOP, SUSPEND). */
@@ -90,6 +90,7 @@ public class VirtualMachine {
 	 */
 	@ManyToOne /** Indica que muitas VMs pertencem a um único usuário. */
 	@JoinColumn(name = "USUARIO_ID") /** Nome da coluna que será a chave estrangeira no banco. */
+	@ToString.Exclude
 	private Usuario usuario;
 
 }
