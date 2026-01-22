@@ -25,10 +25,12 @@ import com.desafio.vm.util.JwtUtil;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/auth")
+@Tag(name = "Autenticação", description = "API para conseguir entrar no sistema e sair")
 public class AuthenticationController {
 
 	@Autowired
