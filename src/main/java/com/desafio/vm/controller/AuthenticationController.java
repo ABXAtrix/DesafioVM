@@ -92,7 +92,7 @@ public class AuthenticationController {
 					.authenticate(new UsernamePasswordAuthenticationToken(loginDTO.getEmail(), loginDTO.getSenha()));
 
 			UserDetail user = (UserDetail) auth.getPrincipal();
-			String token = jwtUtil.generateToken(user.getUsername());
+			String token = jwtUtil.generateToken(user);
 
 			return ResponseEntity.ok(Map.of("token", token));
 		} catch (BadCredentialsException e) {

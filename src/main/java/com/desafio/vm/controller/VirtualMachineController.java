@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -49,6 +50,7 @@ public class VirtualMachineController {
 	@Operation(summary = "Listar todas as máquinas do sistema", description = "Retorna todas as VMs cadastradas sem filtro de usuário.")
 	@ApiResponses({ @ApiResponse(responseCode = "200", description = "Lista completa obtida com sucesso"),
 			@ApiResponse(responseCode = "403", description = "Acesso negado") })
+	@PreAuthorize("hasAuthority('ADMIN')")
 	@GetMapping("/all")
 	public ResponseEntity<DesafioVmApiResponse<List<VirtualMachineDTO>>> getAllSystemWide() {
 		try {

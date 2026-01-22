@@ -2,11 +2,15 @@ package com.desafio.vm.util;
 
 import java.util.Base64;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.crypto.SecretKey;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+
+import com.desafio.vm.config.security.UserDetail;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -30,8 +34,13 @@ public class JwtUtil {
 		this.secretKey = Keys.hmacShaKeyFor(decodedKey);
 	}
 
-	public String generateToken(String username) {
-		return Jwts.builder().setSubject(username).setIssuedAt(new Date())
+	public String generateToken(UserDetail userDetail) {
+		Map<String, Object> claims = new HashMap<>();
+		claims.put("cargo", userDetail.getUsuario().getCargo().name());
+		claims.put("nome", userDetail.getUsuario().getNome());
+
+		return Jwts.builder().setClaims(claims).setSubject(userDetail.getUsername())
+				.setIssuedAt(new Date(System.currentTimeMillis()))
 				.setExpiration(new Date(System.currentTimeMillis() + expirationTime)).signWith(secretKey).compact();
 	}
 
