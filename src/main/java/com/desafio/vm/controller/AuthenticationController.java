@@ -53,7 +53,8 @@ public class AuthenticationController {
 	 * @return Resposta de sucesso ou erro caso o e-mail já exista.
 	 */
 
-	@Operation(summary = "Registrar novo usuário", description = "Cria um novo usuário e criptografa a senha antes de salvar no banco.")
+	@Operation(summary = "Registrar novo usuário", description = "Cria um novo usuário. "
+			+ "Nome deve ter no mínimo 3 caracteres e senha deve ter no mínimo 6 caracteres .")
 	@ApiResponse(responseCode = "201", description = "Usuário criado com sucesso")
 	@ApiResponse(responseCode = "400", description = "E-mail já cadastrado ou dados inválidos")
 	@PostMapping("/registrar")
