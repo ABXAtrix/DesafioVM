@@ -32,9 +32,14 @@ public class TarefaService {
 	 */
 	@Transactional
 	public void registrar(Usuario usuario, VirtualMachine vm, String acao) {
-		Tarefa tarefa = Tarefa.builder().usuario(usuario).virtualMachine(vm).nomeMaquina(vm.getNome()).acao(acao)
-				.dataHora(LocalDateTime.now()).build();
-		repository.save(tarefa);
+		Tarefa.TarefaBuilder builder = Tarefa.builder().usuario(usuario).nomeMaquina(vm.getNome()).acao(acao)
+				.dataHora(LocalDateTime.now());
+
+		if (!"DELETE".equalsIgnoreCase(acao)) {
+			builder.virtualMachine(vm);
+		}
+
+		repository.save(builder.build());
 	}
 
 	/**
@@ -50,5 +55,10 @@ public class TarefaService {
 
 		/** Para usuários comuns, filtramos estritamente pelo ID dele */
 		return repository.findByUsuarioId(getCurrentUserId(), sort);
+	}
+
+	@Transactional
+	public void desvincularTarefasDaVm(Long vmId) {
+		repository.desvincularVm(vmId);
 	}
 }
