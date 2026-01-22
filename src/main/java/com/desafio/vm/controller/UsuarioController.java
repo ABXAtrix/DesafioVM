@@ -128,7 +128,8 @@ public class UsuarioController {
 	 * @return UsuarioDTO com as informações atualizadas
 	 */
 
-	@Operation(summary = "Atualizar meu próprio perfil", description = "Atualiza os dados do usuário que está logado. O sistema identifica o usuário automaticamente pelo Token JWT.")
+	@Operation(summary = "Atualizar meu próprio perfil", description = "Atualiza os dados do usuário que está logado. "
+			+ "O sistema identifica o usuário automaticamente pelo Token JWT. Nome deve ter no mínimo 3 caracteres e senha deve ter no mínimo 6 caracteres .")
 	@ApiResponses({ @ApiResponse(responseCode = "200", description = "Perfil atualizado com sucesso"),
 			@ApiResponse(responseCode = "400", description = "Dados inválidos fornecidos") })
 	@PutMapping("/me")

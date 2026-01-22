@@ -17,6 +17,7 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -47,6 +48,7 @@ public class Usuario {
 	/** Nome do usuário. Requisito para exibição em logs e tarefas. */
 	@Column(name = "NOME")
 	@NotBlank(message = "O nome é obrigatório")
+	@Size(min = 3, message = "O nome deve ter no mínimo 3 caracteres")
 	private String nome;
 
 	/** E-mail para login. Validado conforme o formato padrão de e-mail. */
@@ -58,6 +60,7 @@ public class Usuario {
 	/** Senha criptografada para autenticação no sistema. */
 	@Column(name = "SENHA")
 	@NotBlank(message = "A senha é obrigatória")
+	@Size(min = 6, message = "A senha deve ter no mínimo 6 caracteres")
 	private String senha;
 
 	/** Se as VMs forem vinculadas ao usuário para o limite de 5 */

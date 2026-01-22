@@ -6,6 +6,9 @@ import com.desafio.vm.enums.Cargos;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
 
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -30,9 +33,13 @@ public class UsuarioDTO {
 	private Long id;
 
 	/** Nome do usuário. */
+	@NotBlank(message = "O nome é obrigatório")
+	@Size(min = 3, message = "O nome deve ter no mínimo 3 caracteres")
 	private String nome;
 
 	/** E-mail utilizado como identificador no sistema. */
+	@NotBlank(message = "O e-mail é obrigatório")
+	@Email(message = "Formato de e-mail inválido")
 	private String email;
 
 	/**
@@ -40,6 +47,7 @@ public class UsuarioDTO {
 	 * mas nunca enviada de volta nas respostas da API por segurança.
 	 */
 	@JsonProperty(access = Access.WRITE_ONLY)
+	@Size(min = 6, message = "A senha deve ter no mínimo 6 caracteres")
 	private String senha;
 
 	/** Lista de máquinas virtuais pertencentes ao usuário. */
