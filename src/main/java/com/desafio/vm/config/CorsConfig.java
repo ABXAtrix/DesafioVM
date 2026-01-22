@@ -2,6 +2,7 @@ package com.desafio.vm.config;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.cors.CorsConfiguration;
@@ -49,11 +50,15 @@ public class CorsConfig {
 	 * 
 	 * @return Fonte de configuração CORS pronta para uso pelo Spring Security
 	 */
+
+	@Value("${app.cors.origins}")
+	private List<String> allowedOrigins;
+
 	@Bean
 	CorsConfigurationSource corsConfigurationSource() {
 		CorsConfiguration config = new CorsConfiguration();
 		// Domínios autorizados para acessar a API
-		config.setAllowedOrigins(List.of("http://localhost:8080/", "http://localhost:4200"));
+		config.setAllowedOrigins(allowedOrigins);
 		// Métodos HTTP permitidos
 		config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
 		// Todos os headers permitidos
