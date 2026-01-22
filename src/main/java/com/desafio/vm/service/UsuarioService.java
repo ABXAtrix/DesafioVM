@@ -91,7 +91,6 @@ public class UsuarioService {
 	 */
 
 	public List<Usuario> findAll() {
-		// Usamos o objeto Sort para garantir a ordenação no banco
 		return repository.findAll(Sort.by(Sort.Direction.ASC, "id"));
 	}
 

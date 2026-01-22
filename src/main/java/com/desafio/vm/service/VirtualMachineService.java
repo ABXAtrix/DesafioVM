@@ -84,7 +84,6 @@ public class VirtualMachineService {
 	 * Busca VMs paginadas para o usuário logado.
 	 */
 	public Page<VirtualMachine> findAllPaginated(Pageable pageable, VirtualMachine filter) {
-		// Se o front-end não enviou ordenação, definimos ID ASC como padrão
 		if (pageable.getSort().isUnsorted()) {
 			pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by("id").ascending());
 		}
@@ -138,6 +137,10 @@ public class VirtualMachineService {
 
 		tarefaService.registrar(salva.getUsuario(), salva, "CREATE");
 
+		if (salva.getStatus() != null) {
+			tarefaService.registrar(salva.getUsuario(), salva, salva.getStatus().toString());
+		}
+
 		return salva;
 	}
 
@@ -147,17 +150,19 @@ public class VirtualMachineService {
 	@Transactional
 	public VirtualMachine update(Long id, VirtualMachine updated) {
 		return repository.findById(id).map(existing -> {
-			// 1. Validação de Propriedade
+			/** 1. Validação de Propriedade */
 			if (existing.getUsuario() == null || !existing.getUsuario().getId().equals(getCurrentUserId()))
 				throw new AplicacaoException("Acesso negado: esta máquina pertence a outro usuário.");
 
-			// 2. Bloqueio de alteração de ID (Se o ID enviado no corpo for diferente do ID
-			// da URL)
+			/**
+			 * 2. Bloqueio de alteração de ID (Se o ID enviado no corpo for diferente do ID
+			 * da URL)
+			 */
 			if (updated.getId() != null && !updated.getId().equals(id)) {
 				throw new AplicacaoException("Não é permitido alterar o ID de um registro existente.");
 			}
 
-			// 3. Bloqueio de alteração da Data de Criação
+			/** 3. Bloqueio de alteração da Data de Criação */
 			if (updated.getDataCriacao() != null && !updated.getDataCriacao().equals(existing.getDataCriacao())) {
 				throw new AplicacaoException("A data de criação não pode ser alterada.");
 			}
@@ -193,7 +198,9 @@ public class VirtualMachineService {
 
 		tarefaService.registrar(vm.getUsuario(), vm, "DELETE");
 
-		repository.deleteById(id);
+		tarefaService.desvincularTarefasDaVm(id);
+
+		repository.delete(vm);
 	}
 
 	/**
